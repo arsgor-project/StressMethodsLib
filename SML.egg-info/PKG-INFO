@@ -1,0 +1,6 @@
+Metadata-Version: 2.4
+Name: SML
+Version: 0.0.1
+Summary: Библиотека методик для расчетов прочности
+Requires-Dist: numpy>=1.23
+Requires-Dist: pandas~=2.0
