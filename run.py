@@ -1,4 +1,7 @@
-import SML
+# Если используется Embedded Python(ничего не ломает)
+import sys, os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, '.')
 
 import argparse
 import os
