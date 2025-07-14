@@ -2,15 +2,15 @@
 главное тело методики
 считаем, что данные введены корректно
 '''
-import SML
 import pandas as pd
+import os.path as p
 
 def run(data_path):
     print(data_path)
 
     # чтение файлов
-    inputData = pd.read_csv(data_path + "/InputData.csv", delimiter=';', decimal=",")
-    loadCases = pd.read_csv(data_path + "/loadCases.csv", delimiter=';', decimal=",")
+    inputData = pd.read_csv(p.join(data_path, "InputData.csv"), delimiter=';', decimal=",")
+    loadCases = pd.read_csv(p.join(data_path, "loadCases.csv"), delimiter=';', decimal=",")
 
     num_zones = inputData.shape[0]
     num_loadcases = loadCases.shape[0]
@@ -19,7 +19,7 @@ def run(data_path):
     zones = []
     for i in range(num_zones):    
         zone_file = inputData.at[i , 'fe_data']
-        zone_df = pd.read_csv(data_path + "/" + zone_file, delimiter=';', decimal=",", skipfooter=1, engine='python')
+        zone_df = pd.read_csv(p.join(data_path, zone_file), delimiter=';', decimal=",", skipfooter=1, engine='python')
         zones.append(zone_df)
 
     print(zones[0].info())
@@ -66,7 +66,7 @@ def run(data_path):
     output_df = pd.DataFrame(output_data)
 
     print(output_df)
-    output_df.to_csv(data_path + "/safetyFactors.csv", sep=';', decimal=",",)
+    output_df.to_csv(p.join(data_path, "safetyFactors.csv"), sep=';', decimal=",",)
 
 
 
