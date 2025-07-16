@@ -5,6 +5,7 @@
 python run.py tests/resources/Mises_v1_test/Mises_v1.json tests/resources/Mises_v1_test
 
 Обновлено:
+
 В pyproject.toml добавлена новая зависимость(mdtex2html)
 
 Сделана первая версия логгера, запуск расчета остался тем же.
