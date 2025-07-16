@@ -7,9 +7,13 @@ import re
 
 def formula_logger(func):
 	def wrapper(*args, **kwargs):
-		result: pd.DataFrame = func(*args, **kwargs)
 		data_path: str = p.abspath(args[0])
+		if p.exists(data_path) == False:
+			raise Exception('Директории для расчета не существует!')
 		formulas_path: str = p.abspath(args[1])
+		if p.exists(formulas_path) == False:
+			raise Exception('Файла с описанием формул не существует!')
+		result: pd.DataFrame = func(*args, **kwargs)
 		parameters, formulas = formula_file_parse(formulas_path)
 		log_file_path = make_log_file(data_path, result, parameters, formulas)
 		print(f"Лог файл записан по пути {log_file_path}")
@@ -40,11 +44,11 @@ def formula_file_parse(formulas_path: str) -> tuple[Dict, list[str]]:
 
 def make_log_file(data_path: str, data: pd.DataFrame, parameters: Dict, formulas: list[str]) -> str:
 	log_file_path: str = p.join(data_path, 'calculation_log.html')
-	res_str: str = '${Легенда}$\n\n'
+	res_str: str = '**Легенда**\n\n'
 	# Пишем легенду
 	for f in formulas:
 		res_str += f'{formula_parse(f, parameters, data, legend = True)}\n'
-	res_str += '${Расчет}$\n\n'
+	res_str += '**Расчет**\n\n'
 	# Формируем результаты расчетов
 	for i in range(data.shape[0]):
 		for f in formulas:
@@ -84,9 +88,9 @@ def formula_parse(formula: str, parameters: Dict, data: pd.DataFrame, num: int =
 		if par_cut in par_vals:
 			key: str = get_key_by_value(parameters, par_cut)
 			if legend:
-				value: str = parameters[key][1]
+				value: str = parameters[key][1].replace(' ','\\;')
 			else:
-				value: str = str(round(data.at[num, key], 4)) if type(data.at[num, key]) is not str else str(data.at[num, key])
+				value: str = str(round(data.at[num, key], 4)) if type(data.at[num, key]) is not str else str(data.at[num, key]).replace(' ','\\;')
 			f = f.replace(par, value)
 	return f
 
