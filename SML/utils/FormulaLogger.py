@@ -33,28 +33,22 @@ def formula_file_parse(formulas_path: str) -> tuple[Dict, list[str]]:
 			match flag:
 				case 'p':
 					par = line.strip().split(' : ')
-					parameters[par[0]] = par[1]
+					parameters[par[0]] = par[1].split('-')
 				case 'f':
 					formulas.append(line)
 	return parameters, formulas
 
 def make_log_file(data_path: str, data: pd.DataFrame, parameters: Dict, formulas: list[str]) -> str:
 	log_file_path: str = p.join(data_path, 'calculation_log.html')
-	res_str: str = ''
+	res_str: str = '${Легенда}$\n\n'
+	# Пишем легенду
+	for f in formulas:
+		res_str += f'{formula_parse(f, parameters, data, legend = True)}\n'
+	res_str += '${Расчет}$\n\n'
+	# Формируем результаты расчетов
 	for i in range(data.shape[0]):
 		for f in formulas:
-			# Находим все параметры в строке формулы
-			pars = [re.sub(r'[^a-zA-Z0-9\s\/]', ' ', p) for p in f.split() if '/p' in p]
-			pars = find_words_starting_with(pars, '/p')
-			# pars = [find_words_starting_with(p, '/p') for p in pars]
-			# Ищем эти параметры в параметрах
-			for par in pars:
-				par_cut = par.split('/p')[1]
-				if par_cut in parameters.values():
-					key: str = get_key_by_value(parameters, par_cut)
-					value: str = str(round(data.at[i, key], 4)) if type(data.at[i, key]) is not str else  str(data.at[i, key])
-					f = f.replace(par, value)
-			res_str +=  f'{f}\n'
+			res_str += f'{formula_parse(f, parameters, data, i)}\n'
 	result: str = mdtex2html.convert(res_str)
 	with open(log_file_path, 'w') as f:
 		f.write(result)
@@ -63,7 +57,7 @@ def make_log_file(data_path: str, data: pd.DataFrame, parameters: Dict, formulas
 
 def get_key_by_value(dictionary: Dict, target_value: Any):
 	for key, value in dictionary.items():
-		if value == target_value:
+		if target_value in value:
 			return key
 	return None
 
@@ -77,7 +71,23 @@ def find_words_starting_with(words_list: list, char: str):
 	return result
 
 
-# f = '{q_{vm}}_{max}=/pqVMMax\n'
-# par = '/pqVMMax'
-# f.find(par) # Возвращает -1, типа не найдена подстрока, хотя она есть
+def formula_parse(formula: str, parameters: Dict, data: pd.DataFrame, num: int = 0, legend: bool = False) -> str:
+	f: str = formula
+	# Находим все параметры в строке формулы
+	pars = [re.sub(r'[^a-zA-Z0-9\s\/]', ' ', p) for p in formula.split() if '/p' in p]
+	pars = find_words_starting_with(pars, '/p')
+	# pars = [find_words_starting_with(p, '/p') for p in pars]
+	# Ищем эти параметры в параметрах
+	for par in pars:
+		par_cut = par.split('/p')[1]
+		par_vals = [row[0] for row in list(parameters.values())]
+		if par_cut in par_vals:
+			key: str = get_key_by_value(parameters, par_cut)
+			if legend:
+				value: str = parameters[key][1]
+			else:
+				value: str = str(round(data.at[num, key], 4)) if type(data.at[num, key]) is not str else str(data.at[num, key])
+			f = f.replace(par, value)
+	return f
+
 
