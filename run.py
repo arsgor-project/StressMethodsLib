@@ -24,12 +24,13 @@ def run_method_from_json(json_path: str, data_path: str):
         data = json.load(f)
 
     method_path = data["MethodBody"]
+    formulas_path = data["MethodFormulasPath"]
     
     func = import_by_path(method_path)
     if not callable(func):
         raise TypeError(f"{method_path} не является функцией")
 
-    return func(data_path)
+    return func(data_path, formulas_path)
 
 def dir_path(path):
     if os.path.isdir(path):

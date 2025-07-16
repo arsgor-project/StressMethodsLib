@@ -53,7 +53,8 @@
     "MethodValidator": "SML.methods.Mises_v1.validator", 
     "MethodName": "Mises тест",
     "Description": "Это тестовая методика для написания webAPI",
-    "MethodVersion":  "SML.Methods/Mises_v1/__init__.py", 
+    "MethodVersion":  "SML.Methods/Mises_v1/__init__.py",
+    "MethodFormulasPath": "SML/Methods/Mises_v1/formulas.md",
     "LibraryVersion": "pyproject.toml", 
     "Requirements":   "pyproject.toml"
 }
