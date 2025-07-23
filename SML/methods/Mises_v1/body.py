@@ -6,15 +6,24 @@ import pandas as pd
 import os.path as p
 
 from ...utils.FormulaLogger import formula_logger
+from ...utils.Logger import Logger
 
 
-@formula_logger
-def run(data_path: str, formulas_path: str) -> pd.DataFrame:
+def run(data_path: str, formulas_path: str) -> None:
 	print(data_path)
 
+	# Создаем объект логгера
+	logger = Logger('Расчет КЗ областей по Мизесу', data_path)
+
 	# чтение файлов
-	inputData = pd.read_csv(p.join(data_path, "InputData.csv"), delimiter = ';', decimal = ",")
+	input_path: str = p.join(data_path, "InputData.csv")
+	inputData = pd.read_csv(input_path, delimiter = ';', decimal = ",")
+	logger.add_log(f'Прочитан файл исходных данных по пути - {input_path}', 'INFO')
+
+	load_case_path: str = p.join(data_path, "loadCases.csv")
 	loadCases = pd.read_csv(p.join(data_path, "loadCases.csv"), delimiter = ';', decimal = ",")
+	logger.add_log(f'Прочитан файл случаев нагружения по пути - {load_case_path}', 'INFO')
+
 
 	num_zones = inputData.shape[0]
 	num_loadcases = loadCases.shape[0]
@@ -23,9 +32,11 @@ def run(data_path: str, formulas_path: str) -> pd.DataFrame:
 	zones = []
 	for i in range(num_zones):
 		zone_file = inputData.at[i, 'fe_data']
-		zone_df = pd.read_csv(p.join(data_path, zone_file), delimiter = ';', decimal = ",", skipfooter = 1,
+		zone_file_path = p.join(data_path, zone_file)
+		zone_df = pd.read_csv(zone_file_path, delimiter = ';', decimal = ",", skipfooter = 1,
 							  engine = 'python')
 		zones.append(zone_df)
+		logger.add_log(f'Прочитаны зоны из файла - {zone_file_path}', 'INFO')
 
 	print(zones[0].info())
 
@@ -55,7 +66,9 @@ def run(data_path: str, formulas_path: str) -> pd.DataFrame:
 		critLC_Name = sorted.at[0, 'LC_Name']
 
 		sigmaVonMises = qVonMises / th
+		logger.add_log(f'Выполнен расчет напряжений по мизесу по критическим силам детали \'{detail_name}\' в зоне \'{zone_name}\'','INFO')
 		safetyFactor = sigma_vr / sigmaVonMises
+		logger.add_log(f'Выполнен расчет КЗ детали \'{detail_name}\'','INFO')
 		# print(th, sigma_vr,  qVonMises, sigmaVonMises, critElemID, critLC_ID, critLC_Name, safetyFactor)
 
 		detail_list.append(detail_name)
@@ -80,5 +93,9 @@ def run(data_path: str, formulas_path: str) -> pd.DataFrame:
 	output_df = pd.DataFrame(output_data)
 
 	print(output_df)
-	output_df.to_csv(p.join(data_path, "safetyFactors.csv"), sep = ';', decimal = ",", )
-	return output_df
+	output_path: str = p.join(data_path, "safetyFactors.csv")
+	output_df.to_csv(output_path, sep = ';', decimal = ",", )
+	logger.add_log(f'Записан файл с результатми по пути - {output_path}','INFO')
+	logger.print_log()
+	logger.save_log()
+	# return output_df
