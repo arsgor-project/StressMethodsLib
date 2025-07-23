@@ -5,7 +5,6 @@
 import pandas as pd
 import os.path as p
 
-from ...utils.FormulaLogger import formula_logger
 from ...utils.Logger import Logger
 
 
