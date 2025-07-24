@@ -13,7 +13,7 @@ class Logger:
 		self.log_path = _log_path
 		self.log_list = []
 		d_t = datetime.now().__str__()
-		self.log_list.append(': '.join(['INFO', ' | '.join([self.name, d_t])]))
+		self.log_list.append(': '.join(['TITLE', ' | '.join([self.name, d_t])]))
 
 	def add_log(self, log_str: str, log_type: Literal['INFO', 'DEBUG']) -> None:
 		d_t = datetime.now().__str__()
