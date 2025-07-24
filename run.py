@@ -50,12 +50,18 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     data_path = args.folder
-    method_info = args.json_file
-    print(f"Передан путь {method_info}")
+    method_info_json = args.json_file
+    print(f"Передан путь {method_info_json}")
     print(f"Передан путь {data_path}")
 
     # прежде чем вызывать методику можно вызвать валидатор
-    result  = run_method_from_json(method_info, data_path)
+    from SML.utils.Validator import Validator
+    val: Validator = Validator(method_info_json, data_path)
+    if val.validate() == True:
+        print('Все исходные файлы правильной формы!')
+    else:
+        raise Exception('Есть неправильные файлы! Расчет не продолжится')
+    result = run_method_from_json(method_info_json, data_path)
     print(f"Расчет завершен")
 
 
