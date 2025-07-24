@@ -6,6 +6,7 @@ import pandas as pd
 import os.path as p
 
 from ...utils.Logger import Logger
+from ...utils.Validator import Validator
 
 
 def run(data_path: str, formulas_path: str) -> None:
