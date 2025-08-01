@@ -15,7 +15,7 @@ class Logger:
 		d_t = datetime.now().__str__()
 		self.log_list.append(': '.join(['TITLE', ' | '.join([self.name, d_t])]))
 
-	def add_log(self, log_str: str, log_type: Literal['INFO', 'DEBUG']) -> None:
+	def add_log(self, log_str: str, log_type: Literal['INFO', 'DEBUG', 'ERROR']) -> None:
 		d_t = datetime.now().__str__()
 		self.log_list.append(': '.join([log_type, ' | '.join([log_str, d_t])]))
 

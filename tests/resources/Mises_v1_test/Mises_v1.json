@@ -50,7 +50,7 @@
         ]
     },
     "MethodBody": "SML.methods.Mises_v1.body.run",   
-    "MethodValidator": "SML.methods.Mises_v1.validator", 
+    "MethodValidator": "SML.methods.Mises_v1.validator.get_validator",
     "MethodName": "Mises тест",
     "Description": "Это тестовая методика для написания webAPI",
     "MethodVersion":  "SML.Methods/Mises_v1/__init__.py",

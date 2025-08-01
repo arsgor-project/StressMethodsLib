@@ -6,24 +6,29 @@ import pandas as pd
 import os.path as p
 
 from ...utils.Logger import Logger
-from ...utils.Validator import Validator
 
 
-def run(data_path: str, formulas_path: str) -> None:
+def run(logger: Logger, data_path: str, data_list: list[pd.DataFrame] = None) -> None:
+	if data_path is None and data_list is None:
+		logger.add_log('Нет данных и пути к данным','ERROR')
+		raise Exception('Должен быть либо путь к данным, либо сами данные после валидатора')
 	print(data_path)
 
 	# Создаем объект логгера
-	logger = Logger('Расчет КЗ областей по Мизесу', data_path)
+	# logger = Logger('Расчет КЗ областей по Мизесу', data_path)
 
 	# чтение файлов
-	input_path: str = p.join(data_path, "InputData.csv")
-	inputData = pd.read_csv(input_path, delimiter = ';', decimal = ",")
-	logger.add_log(f'Прочитан файл исходных данных по пути - {input_path}', 'INFO')
+	if data_list is None:
+		input_path: str = p.join(data_path, "InputData.csv")
+		inputData = pd.read_csv(input_path, delimiter = ';', decimal = ",")
+		logger.add_log(f'Прочитан файл исходных данных по пути - {input_path}', 'INFO')
 
-	load_case_path: str = p.join(data_path, "loadCases.csv")
-	loadCases = pd.read_csv(p.join(data_path, "loadCases.csv"), delimiter = ';', decimal = ",")
-	logger.add_log(f'Прочитан файл случаев нагружения по пути - {load_case_path}', 'INFO')
-
+		load_case_path: str = p.join(data_path, "loadCases.csv")
+		loadCases = pd.read_csv(p.join(data_path, "loadCases.csv"), delimiter = ';', decimal = ",")
+		logger.add_log(f'Прочитан файл случаев нагружения по пути - {load_case_path}', 'INFO')
+	else:
+		inputData = data_list[0]
+		loadCases = data_list[1]
 
 	num_zones = inputData.shape[0]
 	num_loadcases = loadCases.shape[0]
@@ -33,8 +38,7 @@ def run(data_path: str, formulas_path: str) -> None:
 	for i in range(num_zones):
 		zone_file = inputData.at[i, 'fe_data']
 		zone_file_path = p.join(data_path, zone_file)
-		zone_df = pd.read_csv(zone_file_path, delimiter = ';', decimal = ",", skipfooter = 1,
-							  engine = 'python')
+		zone_df = pd.read_csv(zone_file_path, delimiter = ';', decimal = ",", skipfooter = 1, engine = 'python')
 		zones.append(zone_df)
 		logger.add_log(f'Прочитаны зоны из файла - {zone_file_path}', 'INFO')
 
