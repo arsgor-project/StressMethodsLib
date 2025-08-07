@@ -7,11 +7,11 @@
                 "Structure": {
                     "Separator": ";",
                     "Columns": [
-                        {"Name": "detail_name",   "Desc":  "Имя детали",     "Type": "String"},
-                        {"Name": "fe_zone",   "Desc":  "Зона КЭ",     "Type": "String"},
-                        {"Name": "fe_data",   "Desc":  "Выгрузка КЭ", "Type": "Path"},
-                        {"Name": "thickness", "Desc":  "Толщина, t [мм]",    "Type": "Float", "Check": "Positive"},
-                        {"Name": "sigma_v",   "Desc":  "sigma_вр [кгс/мм2]", "Type": "Float", "Check": "Positive"}
+                        {"Name": "detail_name",   "Desc":  "Имя детали",     "Type": "str"},
+                        {"Name": "fe_zone",   "Desc":  "Зона КЭ",     "Type": "str"},
+                        {"Name": "fe_data",   "Desc":  "Выгрузка КЭ", "Type": "str"},
+                        {"Name": "thickness", "Desc":  "Толщина, t [мм]",    "Type": "float", "Check": "Positive"},
+                        {"Name": "sigma_v",   "Desc":  "sigma_вр [кгс/мм2]", "Type": "float", "Check": "Positive"}
                     ]
                 }
             },     
@@ -20,8 +20,8 @@
                 "Structure": {
                     "Separator": ";",
                     "Columns": [
-                        {"Name":"LC_Name", "Desc": "Имя РС"  , "Type":"String"},
-                        {"Name":"LC_ID", "Desc":   "Номер РС", "Type":"Int", "Check": "Positive"}
+                        {"Name":"LC_Name", "Desc": "Имя РС"  , "Type":"str"},
+                        {"Name":"LC_ID", "Desc":   "Номер РС", "Type":"int", "Check": "Positive"}
                     ]
                 }
             }     
@@ -33,14 +33,14 @@
                 "Structure": {
                     "Separator": ";",
                     "Columns": [
-                        {"Name": "zone_ID", "Desc": "Номер зоны КЭ", "Type":"Int"},
-                        {"Name": "detail_name",   "Desc":  "Имя детали", "Type": "String"},
-                        {"Name": "fe_zone",   "Desc":  "Зона КЭ", "Type": "String"},
-                        {"Name": "LC_critical",   "Desc":  "Определяющий РС", "Type": "String"},
-                        {"Name": "thickness", "Desc":  "Толщина, t [мм]",     "Type": "Float"},
-                        {"Name": "sigma_VM",  "Desc":  "sigma_VM, [кгс/мм2]", "Type": "Float"},
-                        {"Name": "sigma_v",   "Desc":  "sigma_вр, [кгс/мм2]", "Type": "Float"},
-                        {"Name": "safety_factor", "Desc":  "Коэффициент запаса", "Type": "Float"}
+                        {"Name": "zone_ID", "Desc": "Номер зоны КЭ", "Type":"int"},
+                        {"Name": "detail_name",   "Desc":  "Имя детали", "Type": "str"},
+                        {"Name": "fe_zone",   "Desc":  "Зона КЭ", "Type": "str"},
+                        {"Name": "LC_critical",   "Desc":  "Определяющий РС", "Type": "str"},
+                        {"Name": "thickness", "Desc":  "Толщина, t [мм]",     "Type": "float"},
+                        {"Name": "sigma_VM",  "Desc":  "sigma_VM, [кгс/мм2]", "Type": "float"},
+                        {"Name": "sigma_v",   "Desc":  "sigma_вр, [кгс/мм2]", "Type": "float"},
+                        {"Name": "safety_factor", "Desc":  "Коэффициент запаса", "Type": "float"}
                     ]
                 }
             },

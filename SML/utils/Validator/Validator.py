@@ -1,9 +1,12 @@
 import json
 import os.path as p
+import sys
 from abc import abstractmethod
+from typing import Dict
 
 import pandas as pd
-from .Logger import Logger
+from StressMethodsLib.SML.utils.Logger import Logger
+from StressMethodsLib.SML.utils.Validator.Exceptions import ColumnMismatchException
 
 class Validator:
 	json_path: str
@@ -23,12 +26,24 @@ class Validator:
 			source_data = data['SourceData']
 			for l in source_data['InputData']:
 				file_path: str = p.abspath(p.join(self.data_path, p.normpath(l['FileName'])))
-				data = pd.read_csv(file_path, delimiter = ';', decimal = ",")
+				data = pd.read_csv(file_path, delimiter=';', decimal=",")
 				data_columns_name: list[str] = data.keys().tolist()
+				data_types: list[str] = data.dtypes.tolist()
 				valid_names: list[str] = []
-				for name in l['Structure']['Columns']:
-					valid_names.append(name['Name'])
-				is_valid.append(data_columns_name == valid_names)
+				valid_types: Dict = {}
+				for value in l['Structure']['Columns']:
+					valid_names.append(value['Name'])
+					valid_types[value['Name']] = value['Type']
+				data.astype(valid_types)
+				if data_columns_name == valid_names:
+					is_valid.append(data_columns_name == valid_names)
+				else:
+					try:
+						raise ColumnMismatchException(valid_names, data_columns_name)
+					except ColumnMismatchException as e:
+						print(e.__str__())
+						logger.add_log(e.__str__(), 'ERROR')
+						sys.exit(1)
 				data_list.append(data)
 		result = all(is_valid)
 		if result:
@@ -37,3 +52,10 @@ class Validator:
 			logger.add_log('Данные не имеют необходимую структуру','ERROR')
 			raise Exception('Data is not valid')
 		return all(is_valid), data_list
+
+
+	def validate_names(self, logger: Logger) -> tuple[bool, list[pd.DataFrame]]:
+		pass
+
+	def validate_types(self, logger: Logger):
+		pass

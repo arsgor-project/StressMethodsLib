@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ...utils.Validator import Validator
+from StressMethodsLib.SML.utils.Validator.Validator import Validator
 from ...utils.Logger import Logger
 
 
